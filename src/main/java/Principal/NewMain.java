@@ -16,8 +16,11 @@ public class NewMain {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Controlador control = new Controlador();
-        control.iniciar();
+        
+        Principal prin = new Principal();
+        prin.iniciar();
+//        Controlador control = new Controlador();
+//        control.iniciar();
     }
     
 }
