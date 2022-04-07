@@ -1,0 +1,411 @@
+package JFLEX_Y_CUP;
+
+import Instrucciones.Clase;
+import Instrucciones.Comentario;
+import Instrucciones.ErrorObjeto;
+import Instrucciones.Metodo;
+import Instrucciones.Variable;
+import java_cup.runtime.*;
+import java.util.ArrayList;
+
+parser code {:
+
+    private Symbol s;
+    private String claseTemp;
+    private String metodosTemp;
+    private ArrayList<Clase> clases = new ArrayList<>();
+    private ArrayList<Variable> variables = new ArrayList<>();
+    private ArrayList<Metodo> metodos = new ArrayList<>();
+    private ArrayList<Comentario> comentarios = new ArrayList<>();
+    private ArrayList<ErrorObjeto> errores = new ArrayList<>();
+
+public AnalizadorSintacticoJava(AnalizadorLexicoJava lexico){
+    super(lexico);
+}
+
+public Symbol getS(){
+return this.s;
+}
+
+public ArrayList<ErrorObjeto> getErrores() {
+        return errores;
+    }
+
+public void setErrores(ArrayList<ErrorObjeto> errores) {
+        this.errores = errores;
+    }
+
+    public ArrayList<Clase> getClases() {
+        return clases;
+    }
+
+    public void setClases(ArrayList<Clase> clases) {
+        this.clases = clases;
+    }
+
+    public ArrayList<Variable> getVariables() {
+        return variables;
+    }
+
+    public void setVariables(ArrayList<Variable> variables) {
+        this.variables = variables;
+    }
+
+    public ArrayList<Metodo> getMetodos() {
+        return metodos;
+    }
+
+    public void setMetodos(ArrayList<Metodo> metodos) {
+        this.metodos = metodos;
+    }
+
+    public ArrayList<Comentario> getComentarios() {
+        return comentarios;
+    }
+
+    public void setComentarios(ArrayList<Comentario> comentarios) {
+        this.comentarios = comentarios;
+    }
+
+    private void añadirMetodo(String tipo, String nombre, String params) {
+        metodos.add(new Metodo(nombre, tipo, params));
+    }
+
+    private void añadirComentario(String comentario) {
+        comentarios.add(new Comentario(comentario));
+    }
+
+    private void añadirVariable(String tipo, String id) {
+        variables.add(new Variable(tipo, id));
+    }
+
+    private void añadirClase(String id, String metodos) {
+        claseTemp = id;
+        metodosTemp = metodos;
+    }
+
+    private void evaluarVariables(String t, String var){
+        String [] variables = var.split(",");
+            for (int i = 0; i < variables.length; i++) {
+                añadirVariable(t, variables[i]);
+            }
+}
+
+    private void guardarClase(String t) {
+         if (claseTemp == t) {
+              clases.add(new Clase(t, metodos, variables));
+        }
+        metodos = new ArrayList<>();
+        variables = new ArrayList<>();
+    }
+         
+ //tratamiento de errores
+    public void report_error(String message, Object info) {
+        System.out.println("public void report_error");
+    }
+    
+    public void report_fatal_error(String message, Object info) {
+        System.out.println("public void report_fatal_error");
+    }
+
+    public void syntax_error(Symbol cur_token) {
+        System.out.println("El error es el simbolo: " + sym.terminalNames[cur_token.sym]);
+        System.out.println(String.format("En la posicion: %d, %d", cur_token.left, cur_token.right));
+        System.out.println(cur_token.value);
+        System.out.println("Error guardado");
+    }
+
+    public void unrecovered_syntax_error(Symbol cur_token) {
+         if (cur_token.sym == sym.EOF) {
+            System.out.println("unrecovered_syntax_error");
+            System.out.println("El error es el simbolo: " + (String)cur_token.value);
+            System.out.println(String.format("En la posicion: %d, %d", cur_token.left, cur_token.right));
+        }
+    }
+:}
+
+// seccion de terminales
+terminal IMPORT,PRIVATE,PUBLIC,PROTECTED,FINAL,CLASE,THIS,NEW,INT,BOOLEAN,STRING,CARACTER,DECIMAL,OBJETOS,IF,IFEL,EL,FOR,WHI,
+DO,SWI,BRE,RET,CASE,DEF,PUNTO,COMA,PUNTOYCOMA,DOSPUNTOS,IGUAL,MAS,MENOS,POR,GBAJO,DIVIDIDO,PABIERTO,PCERRADO,LLABIERTO,
+LLCERRADO,COMILLA,CABIERTO,CCERRADO,MENOR,MAYOR,IGUALDAD,DESIGUALDAD,MEI,MAI,Y,O,NEGAR,ENT,DEC,CHAR,BOL,COMENT,STEX,TEXTO;
+
+// seccion de no termimales
+non terminal    s,n,d,t,s1,m,co,var,s2,as,ll,ss,sc,if,ie,fo,f,in,wh,dw,sw,sw1,con,c,ex,ca,u,o,lis,p,ti,vis,op,if1;
+start with s;
+
+s   ::= n t:n                           {:guardarClase((String)n);:}
+    |   n t:n s                         {:guardarClase((String)n);:}
+    |   n s
+    |   COMENT:c s                    {:añadirComentario((String)c);:}
+    |   COMENT:c                      {:añadirComentario((String)c);:}
+    |   error s
+    ;
+
+n   ::= IMPORT c PUNTOYCOMA           
+    ;
+
+t   ::= vis CLASE TEXTO:n LLABIERTO s1:m LLCERRADO t         {:añadirClase((String)n,(String)m);RESULT = (String)n;:}
+    |   vis CLASE TEXTO:n LLABIERTO s1:m LLCERRADO           {:añadirClase((String)n,(String)m);RESULT = (String)n;:}
+    ;
+
+s1  ::= m:c s1:s                         {:RESULT = (String)c + (String)s;:}
+    |   COMENT:c s1                      {:añadirComentario((String)c);:}
+    |   co:c  s1:s                       {:RESULT = (String)c + (String)s;:}
+    |   var:c s1:s                       
+    |   m:c                              {:RESULT = (String)c;:}
+    |   COMENT:c                         {:añadirComentario((String)c);:}
+    |   co:c                             {:RESULT = (String)c;:}
+    |   var:c                            
+    |   error s1
+    ;
+
+m   ::= vis ti:t TEXTO:n PABIERTO p:pa PCERRADO LLABIERTO s2 LLCERRADO     {:añadirMetodo((String)t, (String)n,(String)pa); RESULT = (String)n;:} 
+    |   vis ti:t TEXTO:n PABIERTO PCERRADO LLABIERTO s2 LLCERRADO          {:añadirMetodo((String)t, (String)n,""); RESULT = (String)n;:}
+    ;
+
+co  ::= vis TEXTO:n PABIERTO p:pa PCERRADO LLABIERTO s2 LLCERRADO     {:añadirMetodo("Constructor", (String)n,(String)pa); RESULT = (String)n;:} 
+    |   vis TEXTO:n PABIERTO PCERRADO LLABIERTO s2 LLCERRADO          {:añadirMetodo("Constructor", (String)n,""); RESULT = (String)n;:} 
+    ;
+
+var ::= vis ti:t lis:var PUNTOYCOMA {:evaluarVariables((String) t, (String)var);:}
+    ;
+
+s2  ::= as s2 
+    |   sc s2
+    |   ll s2
+    |   ss s2
+    |   COMENT:c s2                      {:añadirComentario((String)c);:}
+    |   as
+    |   sc
+    |   ll
+    |   ss
+    |   COMENT:c                         {:añadirComentario((String)c);:}
+    ;
+//pendiente
+as  ::= vis ti:t TEXTO:c IGUAL ex PUNTOYCOMA   
+    |   TEXTO IGUAL ex PUNTOYCOMA               
+    |   ti TEXTO IGUAL ex PUNTOYCOMA           
+    |   vis ti CHAR IGUAL ex PUNTOYCOMA        
+    |   CHAR IGUAL ex PUNTOYCOMA                
+    |   ti CHAR IGUAL ex PUNTOYCOMA             
+    ;
+
+ll  ::= TEXTO PABIERTO PCERRADO PUNTOYCOMA
+    |   TEXTO PABIERTO d PCERRADO PUNTOYCOMA
+    ;
+
+d   ::= TEXTO
+    |   TEXTO o d
+    |   CHAR  o d
+    |   STEX o d
+    |   CHAR
+    |   STEX
+    |   ENT
+    |   DEC
+    |   ENT o d
+    |   DEC o d
+    |   PABIERTO DEC o d PCERRADO
+    |   PABIERTO ENT o d PCERRADO
+    |   PABIERTO DEC o d PCERRADO o d
+    |   PABIERTO ENT o d PCERRADO o d
+    |   PABIERTO DEC PCERRADO o d
+    |   PABIERTO ENT PCERRADO o d
+    |   BOL
+    |   NEW ti PABIERTO PCERRADO PUNTOYCOMA
+    ;
+
+ss  ::= BRE PUNTOYCOMA
+    |   RET ex PUNTOYCOMA
+    ;
+
+sc  ::= if
+    |   fo
+    |   wh
+    |   dw
+    |   sw
+    |   error sc
+    ;
+
+if  ::= IF if1 ie
+    |   IF if1 
+    ;
+
+ie  ::= IFEL if1 ie
+    |   IFEL if1
+    |   EL LLABIERTO s2 LLCERRADO
+    ;
+
+if1 ::= PABIERTO con PCERRADO LLABIERTO s2 LLCERRADO
+    ;
+
+fo  ::= FOR PABIERTO f PUNTOYCOMA TEXTO op ex PUNTOYCOMA in PCERRADO LLABIERTO s2 LLCERRADO
+    ;
+
+f   ::= INT TEXTO IGUAL ex
+    |   TEXTO IGUAL ex
+    ;
+
+in  ::= TEXTO MAS MAS
+    |   TEXTO MENOS MENOS
+    |   MAS MAS TEXTO
+    |   MENOS MENOS TEXTO
+    |   TEXTO MAS IGUAL ex
+    |   TEXTO MENOS IGUAL ex
+    ;
+
+wh  ::= WHI PABIERTO con PCERRADO LLABIERTO s2 LLCERRADO
+    ;
+
+dw  ::= DO LLABIERTO s2 LLCERRADO WHI PABIERTO con PCERRADO PUNTOYCOMA
+    ;
+
+sw  ::= SWI PABIERTO con PCERRADO LLABIERTO sw1 LLCERRADO
+    ;
+
+sw1 ::= CASE ex DOSPUNTOS s2 sw1
+    |   CASE ex DOSPUNTOS s2
+    |   DEF DOSPUNTOS s2
+    ;
+
+con ::= ex
+    |   ex op ex
+    ;
+ 
+c   ::= TEXTO PUNTO c
+    |   TEXTO
+    |   POR
+    ;
+ 
+op  ::= MENOR
+    |   MAYOR
+    |   IGUALDAD
+    |   DESIGUALDAD
+    |   MEI
+    |   MAI
+    |   Y
+    |   O
+    |   NEGAR
+    ;
+
+ex  ::= CHAR
+    |   BOL
+    |   STEX
+    |   TEXTO
+    |   ca
+    |   NEW ti PABIERTO PCERRADO 
+    ;
+
+ca  ::= ENT:c               {: RESULT = String.format("%s",c);:}
+    |   ENT:c u:e           {: String cadena = (String)c + (String)e; RESULT = cadena;:}
+    |   DEC:c               {: RESULT = String.format("%s",c);:}
+    |   DEC:c u:e           {: String cadena = (String)c + (String)e; RESULT = cadena;:}
+    |   PABIERTO ENT PCERRADO
+    |   PABIERTO DEC PCERRADO
+    |   PABIERTO ENT u PCERRADO
+    |   PABIERTO DEC u PCERRADO
+    ;
+
+u   ::= o:c ENT:co u:e          {: String cadena = (String)c +(String)co + (String)e; RESULT = cadena;:}
+    |   o:c ENT:co              {: String cadena = (String)c +(String)co; RESULT = cadena;:}
+    |   o:c PABIERTO:pa ENT:x u:e PCERRADO:pc     {: String cadena = (String)c +(String)pa+(String)x +(String)e +(String)pc; RESULT = cadena;:}
+    ;
+
+o   ::= MAS:c       {: RESULT = String.format("%s",c);:}
+    |   MENOS:c     {: RESULT = String.format("%s",c);:}
+    |   POR:c       {: RESULT = String.format("%s",c);:}
+    |   DIVIDIDO:c  {: RESULT = String.format("%s",c);:}
+    ;
+
+lis ::= TEXTO:c COMA:n lis:a{: RESULT = (String)c+(String)n+(String)a;:}
+    |   TEXTO:c           {: RESULT =(String)c;:}
+    |   TEXTO:c IGUAL ex  {: RESULT = (String)c;:}
+    ;
+
+p   ::= ti:t TEXTO:n COMA:c p:pa {:evaluarVariables((String)t,(String)n);RESULT = (String)t +(String)n +(String)c + (String)pa; :}
+    |   ti:t TEXTO:n    {:evaluarVariables((String)t,(String)n); RESULT = (String)t +(String)n;:}
+    ;
+
+ti  ::= INT:c                 {: RESULT = (String)c;:}   
+    |   BOOLEAN:c             {: RESULT = (String)c;:}   
+    |   STRING:c              {: RESULT = (String)c;:} 
+    |   CHAR:c                {: RESULT = (String)c;:} 
+    |   DECIMAL:c             {: RESULT = (String)c;:} 
+    |   OBJETOS:c             {: RESULT = (String)c;:} 
+    |   TEXTO:c               {: RESULT = (String)c;:} 
+    ;
+
+vis ::= PRIVATE
+    |   PUBLIC
+    |   PROTECTED
+    |   FINAL
+    ;
+
+
+/*
+s2  ::= sc s2
+    |   COMENT:c s2                      {:añadirComentario((String)c);:}
+    |   sc
+    |   COMENT:c                         {:añadirComentario((String)c);:}
+    ;
+
+sc  ::= if
+    ;
+
+if  ::= IF if1 ie
+    |   IF if1 
+    ;
+
+ie  ::= IFEL if1 ie
+    |   IFEL if1
+    |   EL LLABIERTO s2 LLCERRADO
+    ;
+
+if1 ::= PABIERTO con PCERRADO LLABIERTO s2 LLCERRADO
+    ;
+
+con ::= ex
+    |   ex op ex
+    ;
+ 
+op  ::= MENOR
+    |   MAYOR
+    |   IGUALDAD
+    |   DESIGUALDAD
+    |   MEI
+    |   MAI
+    |   Y
+    |   O
+    |   NEGAR
+    ;
+
+ex  ::= CHAR
+    |   BOL
+    |   STEX
+    |   TEXTO
+    |   ca
+    |   NEW ti PABIERTO PCERRADO 
+    ;
+
+
+ca  ::= ENT:c               {: RESULT = String.format("%s",c);:}
+    |   ENT:c u:e           {: String cadena = (String)c + (String)e; RESULT = cadena;:}
+    |   DEC:c               {: RESULT = String.format("%s",c);:}
+    |   DEC:c u:e           {: String cadena = (String)c + (String)e; RESULT = cadena;:}
+    |   PABIERTO ENT PCERRADO
+    |   PABIERTO DEC PCERRADO
+    |   PABIERTO ENT u PCERRADO
+    |   PABIERTO DEC u PCERRADO
+    ;
+
+u   ::= o:c ENT:co u:e          {: String cadena = (String)c +(String)co + (String)e; RESULT = cadena;:}
+    |   o:c ENT:co              {: String cadena = (String)c +(String)co; RESULT = cadena;:}
+    |   o:c PABIERTO:pa ENT:x u:e PCERRADO:pc     {: String cadena = (String)c +(String)pa+(String)x +(String)e +(String)pc; RESULT = cadena;:}
+    ;
+
+o   ::= MAS:c       {: RESULT = String.format("%s",c);:}
+    |   MENOS:c     {: RESULT = String.format("%s",c);:}
+    |   POR:c       {: RESULT = String.format("%s",c);:}
+    |   DIVIDIDO:c  {: RESULT = String.format("%s",c);:}
+    ;
+*/
+

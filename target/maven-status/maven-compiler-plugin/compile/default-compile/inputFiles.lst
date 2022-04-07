@@ -1,6 +1,7 @@
 /home/alex/Escritorio/CUNOC/COMPI 1/PROYECTOS/Proyecto1C1/src/main/java/Instrucciones/Variable.java
 /home/alex/Escritorio/CUNOC/COMPI 1/PROYECTOS/Proyecto1C1/src/main/java/Instrucciones/ErrorObjeto.java
 /home/alex/Escritorio/CUNOC/COMPI 1/PROYECTOS/Proyecto1C1/src/main/java/Instrucciones/Metodo.java
+/home/alex/Escritorio/CUNOC/COMPI 1/PROYECTOS/Proyecto1C1/src/main/java/GUI/PrincipalGUI1.java
 /home/alex/Escritorio/CUNOC/COMPI 1/PROYECTOS/Proyecto1C1/src/main/java/Principal/Controlador.java
 /home/alex/Escritorio/CUNOC/COMPI 1/PROYECTOS/Proyecto1C1/src/main/java/Instrucciones/Comentario.java
 /home/alex/Escritorio/CUNOC/COMPI 1/PROYECTOS/Proyecto1C1/src/main/java/GUI/PrincipalGUI.java
@@ -8,8 +9,11 @@
 /home/alex/Escritorio/CUNOC/COMPI 1/PROYECTOS/Proyecto1C1/src/main/java/JFLEX_Y_CUP/sym.java
 /home/alex/Escritorio/CUNOC/COMPI 1/PROYECTOS/Proyecto1C1/src/main/java/Principal/NewMain.java
 /home/alex/Escritorio/CUNOC/COMPI 1/PROYECTOS/Proyecto1C1/src/main/java/JFLEX_Y_CUP/AnalizadorLexicoJava.java
+/home/alex/Escritorio/CUNOC/COMPI 1/PROYECTOS/Proyecto1C1/src/main/java/Principal/Principal.java
 /home/alex/Escritorio/CUNOC/COMPI 1/PROYECTOS/Proyecto1C1/src/main/java/GUI/TablaResultados.java
 /home/alex/Escritorio/CUNOC/COMPI 1/PROYECTOS/Proyecto1C1/src/main/java/Instrucciones/ControladorInstrucciones.java
 /home/alex/Escritorio/CUNOC/COMPI 1/PROYECTOS/Proyecto1C1/src/main/java/JFLEX_Y_CUP/AnalizadorSintacticoJava.java
 /home/alex/Escritorio/CUNOC/COMPI 1/PROYECTOS/Proyecto1C1/src/main/java/Instrucciones/Clase.java
+/home/alex/Escritorio/CUNOC/COMPI 1/PROYECTOS/Proyecto1C1/src/main/java/Archivos/LectorArchivos.java
 /home/alex/Escritorio/CUNOC/COMPI 1/PROYECTOS/Proyecto1C1/src/main/java/Instrucciones/Instruccion.java
+/home/alex/Escritorio/CUNOC/COMPI 1/PROYECTOS/Proyecto1C1/src/main/java/Archivos/ManejoArchivos.java

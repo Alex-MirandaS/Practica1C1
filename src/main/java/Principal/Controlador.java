@@ -21,13 +21,13 @@ import java.util.logging.Logger;
  */
 public class Controlador {
 
-    AnalizadorLexicoJava a;
-    AnalizadorSintacticoJava s;
-    ArrayList<ErrorObjeto> errores = new ArrayList<>();
-    PrincipalGUI principalGUI = new PrincipalGUI(this);
+    private AnalizadorLexicoJava a;
+    private AnalizadorSintacticoJava s;
+    private ArrayList<ErrorObjeto> errores = new ArrayList<>();
+    private Principal principal;
 
-    public void iniciar() {
-        principalGUI.setVisible(true);
+    public Controlador(Principal principal) {
+        this.principal = principal;
     }
 
     public void analizar(String string) {
@@ -36,15 +36,14 @@ public class Controlador {
         s = new AnalizadorSintacticoJava(a);
         try {
             s.parse();
-
             imprimirValores();
-            //verificar();
         } catch (Exception ex) {
             Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     private void imprimirValores() {
+
         for (int i = 0; i < a.getComentarios().size(); i++) {
             System.out.println(a.getComentarios().get(i).getComentario());
         }
@@ -69,6 +68,32 @@ public class Controlador {
 
         }
     }
+
+    public AnalizadorLexicoJava getA() {
+        return a;
+    }
+
+    public void setA(AnalizadorLexicoJava a) {
+        this.a = a;
+    }
+
+    public AnalizadorSintacticoJava getS() {
+        return s;
+    }
+
+    public void setS(AnalizadorSintacticoJava s) {
+        this.s = s;
+    }
+
+    public Principal getPrincipal() {
+        return principal;
+    }
+
+    public void setPrincipal(Principal principal) {
+        this.principal = principal;
+    }
+    
+    
 
 //    private void verificar() {
 //        ArrayList<String> temp;
