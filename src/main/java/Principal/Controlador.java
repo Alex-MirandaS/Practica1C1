@@ -45,8 +45,8 @@ public class Controlador {
     }
 
     private void imprimirValores() {
-        for (int i = 0; i < s.getComentarios().size(); i++) {
-            System.out.println(s.getComentarios().get(i));
+        for (int i = 0; i < a.getComentarios().size(); i++) {
+            System.out.println(a.getComentarios().get(i).getComentario());
         }
         String dato1;
         String dato2;

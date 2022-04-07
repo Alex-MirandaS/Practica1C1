@@ -64,6 +64,10 @@ public class BORRAR {
     public void setComentarios(ArrayList<Comentario> comentarios) {
         this.comentarios = comentarios;
     }
+    
+    public void añadirComentario(ArrayList<Comentario> comentarios) {
+        this.comentarios = comentarios;
+    }
 
     private void añadirMetodo(String tipo, String nombre, String params) {
         metodos.add(new Metodo(nombre, tipo, params));

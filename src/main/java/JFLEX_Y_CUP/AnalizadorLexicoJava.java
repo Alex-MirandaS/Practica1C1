@@ -3,6 +3,8 @@
 // source: Escritorio/CUNOC/COMPI 1/PROYECTOS/Proyecto1C1/src/main/java/Recursos/AnalizadorLexicoJava.jflex
 
 package JFLEX_Y_CUP;
+import Instrucciones.Comentario;
+import java.util.ArrayList;
 import java_cup.runtime.*;
 
 // See https://github.com/jflex-de/jflex/issues/222
@@ -398,7 +400,17 @@ public class AnalizadorLexicoJava implements java_cup.runtime.Scanner {
   private boolean zzEOFDone;
 
   /* user code: */
-//codigo java
+private ArrayList<Comentario> comentarios = new ArrayList<>();
+
+    public ArrayList<Comentario> getComentarios() {
+        return comentarios;
+    }
+
+    public void setComentarios(ArrayList<Comentario> comentarios) {
+        this.comentarios = comentarios;
+    }
+
+
 
 
   /**
@@ -937,7 +949,7 @@ public class AnalizadorLexicoJava implements java_cup.runtime.Scanner {
             // fall through
           case 85: break;
           case 27:
-            { return new Symbol(sym.COMENT, yyline + 1, yycolumn + 1, yytext());
+            { comentarios.add(new Comentario(yytext()));return new Symbol(sym.COMENT, yyline + 1, yycolumn + 1, yytext());
             }
             // fall through
           case 86: break;

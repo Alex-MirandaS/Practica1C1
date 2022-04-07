@@ -20,6 +20,7 @@ public class Principal {
     private ArrayList<String> doc2;
     private LectorArchivos lector;
     private PrincipalGUI1 principalGUI = new PrincipalGUI1(this);
+    private Controlador controlador = new Controlador();
 
     public void iniciar() {
         principalGUI.setVisible(true);
@@ -39,6 +40,7 @@ public class Principal {
         lector = new LectorArchivos(seleccionarArchivo());
         ArrayList<String> tempArray;
         JTextArea temp;
+        lector.run();
         if (doccument1) {
             doc1 = lector.getArchivosJava();
             tempArray = doc1;
@@ -55,6 +57,10 @@ public class Principal {
         for (int i = 0; i < datos.size(); i++) {
             areaTexto.setText(areaTexto.getText() + datos.get(i));
         }
+    }
+
+    public void analizar() {
+        controlador.analizar(principalGUI.getjTextArea1().getText());
     }
 
 }

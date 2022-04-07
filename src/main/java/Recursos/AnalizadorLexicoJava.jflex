@@ -1,4 +1,6 @@
 package JFLEX_Y_CUP;
+import Instrucciones.Comentario;
+import java.util.ArrayList;
 import java_cup.runtime.*;
 %%
 
@@ -93,7 +95,17 @@ DocumentationComment = "/**" {CommentContent} "*"+ "/"
 CommentContent = ( [^*] | \*+ [^/*] )*
 
 %{
-//codigo java
+private ArrayList<Comentario> comentarios = new ArrayList<>();
+
+    public ArrayList<Comentario> getComentarios() {
+        return comentarios;
+    }
+
+    public void setComentarios(ArrayList<Comentario> comentarios) {
+        this.comentarios = comentarios;
+    }
+
+
 %}
 %eof{
 %eof}
@@ -162,7 +174,7 @@ CommentContent = ( [^*] | \*+ [^/*] )*
 {DEC}           { return new Symbol(sym.DEC, yyline + 1, yycolumn + 1, yytext()); }
 {CHAR}          { return new Symbol(sym.CHAR, yyline + 1, yycolumn + 1, yytext()); }
 {BOL}           { return new Symbol(sym.BOL, yyline + 1, yycolumn + 1, yytext()); }
-{COMENT}        { return new Symbol(sym.COMENT, yyline + 1, yycolumn + 1, yytext()); }
+{COMENT}        { comentarios.add(new Comentario(yytext()));return new Symbol(sym.COMENT, yyline + 1, yycolumn + 1, yytext()); }
 {STEX}          { return new Symbol(sym.STEX, yyline + 1, yycolumn + 1, yytext()); }
 {TEXTO}         { return new Symbol(sym.TEXTO, yyline + 1, yycolumn + 1, yytext()); }
 [^] {}

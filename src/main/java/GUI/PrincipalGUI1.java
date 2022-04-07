@@ -86,6 +86,11 @@ public class PrincipalGUI1 extends javax.swing.JFrame {
         jPanel3.setLayout(new java.awt.GridLayout(1, 2));
 
         jButton3.setText("ANALIZAR");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
         jPanel3.add(jButton3);
 
         jButton4.setText("SALIR");
@@ -180,6 +185,10 @@ public class PrincipalGUI1 extends javax.swing.JFrame {
     private void cargarCarpeta2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cargarCarpeta2ActionPerformed
         principal.cargarCarpeta(false);
     }//GEN-LAST:event_cargarCarpeta2ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        principal.analizar();
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     public JTextArea getjTextArea1() {
         return jTextArea1;
